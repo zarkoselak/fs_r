@@ -3,18 +3,42 @@
 var express	= require('express');
 var api 	= express.Router();
 
+var Booking = require('../../db/models/booking.js');
+
+api.use(function(req, res, next){
+  console.log('prossessing!');
+  next();
+});
+
 api.route('/')
 	.get(function(req, res) {
-		res.json({ message: 'fs_r API!'});
+    res.json({ message: 'FSR API!' });
 	});
 
 api.route('/bookings')
 	.get(function(req, res) {
-		res.json({ message: 'all bookings' });
+		Booking.find(function(err, bookings) {
+      if(err)
+        res.send(err);
+
+      res.json(bookings);
+    });
 	})
 	.post(function(req, res) {
-		//create booking object
-		res.json({ message: 'booking created'});
+    var booking = new Booking({
+      first_name: req.body.first,
+      last_name: req.body.last,
+      date: req.body.date,
+      user_id: req.body.user
+    });
+
+    booking.save(function(err) {
+      if(err)
+        res.send(err);
+
+      res.json({ message: 'Booking created' });
+    });
+
 	});
 
 api.route('/bookings/:booking_id')
