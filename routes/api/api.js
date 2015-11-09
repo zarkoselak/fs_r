@@ -42,18 +42,43 @@ api.route('/bookings')
 	});
 
 api.route('/bookings/:booking_id')
-	.get(function(res, req) {
-		//find booking by id
-		res.json({ message: 'booking' });
+	.get(function(req, res) {
+    Booking.findById(req.params.booking_id, function(err, booking) {
+      if(err)
+        res.send(err);
+
+      res.json(booking);
+    });
 	})
-	.put(function(res, req) {
-		// find booking, edit booking and save model
-		res.json({ message: 'edit booking' });
+
+	.put(function(req, res) {
+
+    Booking.findById(req.params.booking_id, function(err, booking) {
+
+      if(err)
+        res.send(err);
+
+      booking.last_name = req.body.last;
+
+      booking.save(function(err) {
+        if(err)
+          res.send(err);
+
+        res.json({ message: 'booking updated' });
+      });
+    });
 	})
+
 	.delete(function(req, res) {
-		//find booking by id and delete
-		res.josn({ message: 'delete booking' });
-	})
+    Booking.remove({
+      _id: req.params.booking_id
+    }, function(err, booking) {
+        if(err)
+          res.send(err);
+
+        res.json({ message: 'Booking deleted!'});
+    });
+	});
 
 module.exports = api;
 
