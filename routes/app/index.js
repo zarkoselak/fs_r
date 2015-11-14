@@ -1,16 +1,17 @@
 'use strict';
 
-var express	= require('express');
-var web 	= express.Router();
+var express	 = require('express');
+var web 	   = express.Router();
 
 web.route('/')
   .get(function(req, res) {
-    res.json({ message: 'web'});
+    res.render('index');
   });
 
 web.route('/dashboard')
   .get(function(req, res) {
-    res.json({ message: 'login screen' });
+    res.render('index');
+    //res.json({ message: 'login screen' });
   })
   .post(function(req, res) {
     res.json({ message: 'trigger login' });
