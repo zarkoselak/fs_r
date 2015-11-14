@@ -26,10 +26,10 @@ api.route('/bookings')
 	})
 	.post(function(req, res) {
     var booking = new Booking({
-      first_name: req.body.first,
-      last_name: req.body.last,
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
       date: req.body.date,
-      user_id: req.body.user
+      user_id: req.body.user_id
     });
 
     booking.save(function(err) {
@@ -58,7 +58,14 @@ api.route('/bookings/:booking_id')
       if(err)
         res.send(err);
 
-      booking.last_name = req.body.last;
+      //Update all fiels on model
+      for(var field in Booking.schema.paths) {
+        if((field !== '_id') && (field !== '__v')) {
+          if(req.body[field] !== undefined) {
+            booking[field] = req.body[field];
+          }
+        }
+      }
 
       booking.save(function(err) {
         if(err)
