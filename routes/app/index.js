@@ -31,7 +31,7 @@ web.route('/login')
 
         } else {
 
-          var token = jwt.sign({ user: user.nick }, config.secret, { expiresIn: 60 });
+          var token = jwt.sign({ user: user.nick }, config.secret, { expiresIn: 120 });
           console.log('user', user.nick, 'token :', token);
           res.json({
             success: true,
