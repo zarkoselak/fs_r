@@ -1,13 +1,31 @@
 'use strict';
 
-var express	= require('express');
-var api 	= express.Router();
-
-var Booking = require('../../db/models/booking.js');
+var express	 = require('express');
+var api 	   = express.Router();
+var jwt      = require('jsonwebtoken');
+var config   = require('../../config.js');
+var Booking  = require('../../db/models/booking.js');
 
 api.use(function(req, res, next){
   console.log('prossessing!');
-  next();
+  var token = req.body.token || req.query.token || req.headers['x-access-token'];
+
+  if(token) {
+    jwt.verify(token, config.secret, function(err, decoded) {
+      console.log(decoded, req.decoded);
+      if(err) {
+        return res.json({ success: false, message: 'Faild to authenticate token!' });
+      } else {
+        req.decoded = decoded;
+        next();
+      }
+    });
+  } else {
+    return res.status(403).send({
+      success: false,
+      message: 'No token'
+    });
+  }
 });
 
 api.route('/')
